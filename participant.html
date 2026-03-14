@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان المواقف الإنسانية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .participant-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .scenario-title {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            border-right: 4px solid #667eea;
+            padding-right: 10px;
+        }
+
+        .scenario-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .answer-area {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .gratitude-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .gratitude-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .gratitude-answer {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 15px 0;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 استبيان المواقف الإنسانية</h1>
+            <p>شاركنا رأيك وتجربتك بكل حرية - إجاباتك ستكون مجهولة المصدر</p>
+        </header>
+
+        <!-- قسم إدخال الاسم (اختياري) -->
+        <div class="participant-section">
+            <h3 class="scenario-title">👤 معلومات المشارك</h3>
+            <input type="text" id="participantName" class="name-input" placeholder="يمكنك كتابة اسمك أو تركها فارغة (اختياري)">
+            <p style="color: #666; margin-top: 10px; font-size: 0.9em;">✏️ يمكنك المشاركة بدون كتابة اسم</p>
+        </div>
+
+        <!-- قسم الامتنان -->
+        <div class="gratitude-section">
+            <h3 class="gratitude-title">💝 كيف تعبر عن امتنانك لشخص أبدى موقفاً إنسانياً عالياً؟</h3>
+            <textarea id="gratitudeAnswer" class="gratitude-answer" placeholder="اكتب بطريقتك الخاصة... كيف تظهر امتنانك؟" rows="4"></textarea>
+            <button onclick="saveGratitude()" class="submit-btn" style="background: white; color: #f5576c;">إرسال إجابتي</button>
+        </div>
+
+        <!-- المواقف -->
+        <div id="scenariosContainer"></div>
+
+        <!-- رسالة نجاح -->
+        <div id="successMessage" class="success-message">
+            ✅ تم إرسال إجاباتك بنجاح! شكراً لمشاركتك
+        </div>
+
+        <footer>
+            <p>جميع الإجابات محفوظة بسرية تامة</p>
+        </footer>
+    </div>
+
+    <script>
+        // مفتاح التخزين
+        const STORAGE_KEY = 'survey_responses_2024';
+        
+        // الأسئلة الافتراضية
+        let scenarios = [
+            {
+                id: 1,
+                title: "الصدق في العمل",
+                text: "اكتشفت أن زميلك في العمل يخطئ في تقاريره عمداً لتجنب المساءلة. كيف تتصرف في هذا الموقف؟"
+            },
+            {
+                id: 2,
+                title: "مساعدة غريب",
+                text: "ترى شخصاً غريباً في الشارع يبكي ويبدو بحاجة للمساعدة ولكنك متأخر على موعد مهم. كيف تتصرف؟"
+            },
+            {
+                id: 3,
+                title: "العدالة الاجتماعية",
+                text: "شاهدت مديرك يظلم زميلك أمام الجميع. ماذا تفعل بالضبط في هذه اللحظة؟"
+            },
+            {
+                id: 4,
+                title: "الثقة والأمانة",
+                text: "صديقك المقرب أودع لديك مبلغاً من المال دون إيصال، وتعلم أنه يمر بضائقة مالية. كيف تتصرف؟"
+            },
+            {
+                id: 5,
+                title: "التضحية",
+                text: "لديك فرصة سفر للخارج لتحقيق حلمك، لكن والدك مريض ويحتاج رعايتك. ماذا تختار؟"
+            }
+        ];
+
+        // حفظ إجابة عادية
+        function saveAnswer(scenarioId) {
+            const participantName = document.getElementById('participantName').value.trim() || 'مشارك مجهول';
+            const answerText = document.getElementById(`answer-${scenarioId}`).value.trim();
+            
+            if (!answerText) {
+                alert('الرجاء كتابة إجابتك قبل الإرسال');
+                return false;
+            }
+
+            // جلب الإجابات السابقة
+            let allResponses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            // إضافة الإجابة الجديدة
+            allResponses.push({
+                type: 'answer',
+                participant: participantName,
+                scenarioId: scenarioId,
+                scenarioTitle: scenarios.find(s => s.id === scenarioId).title,
+                answer: answerText,
+                timestamp: new Date().toISOString()
+            });
+
+            // حفظ في التخزين
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allResponses));
+            
+            // مسح الحقل
+            document.getElementById(`answer-${scenarioId}`).value = '';
+            
+            // عرض رسالة نجاح
+            showSuccessMessage();
+            
+            return true;
+        }
+
+        // حفظ إجابة الامتنان
+        window.saveGratitude = function() {
+            const participantName = document.getElementById('participantName').value.trim() || 'مشارك مجهول';
+            const gratitudeText = document.getElementById('gratitudeAnswer').value.trim();
+            
+            if (!gratitudeText) {
+                alert('الرجاء كتابة تعبيرك عن الامتنان');
+                return;
+            }
+
+            let allResponses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            allResponses.push({
+                type: 'gratitude',
+                participant: participantName,
+                text: gratitudeText,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allResponses));
+            
+            document.getElementById('gratitudeAnswer').value = '';
+            
+            showSuccessMessage();
+        };
+
+        // عرض رسالة النجاح
+        function showSuccessMessage() {
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+
+        // عرض الأسئلة
+        function displayScenarios() {
+            const container = document.getElementById('scenariosContainer');
+            container.innerHTML = '';
+
+            scenarios.forEach(scenario => {
+                container.innerHTML += `
+                    <div class="scenario-card">
+                        <h3 class="scenario-title">${scenario.title}</h3>
+                        <div class="scenario-text">${scenario.text}</div>
+                        <textarea id="answer-${scenario.id}" class="answer-area" placeholder="اكتب إجابتك هنا..." rows="4"></textarea>
+                        <button class="submit-btn" onclick="saveAnswer(${scenario.id})">إرسال الإجابة</button>
+                    </div>
+                `;
+            });
+        }
+
+        // بدء التشغيل
+        displayScenarios();
+    </script>
+</body>
+</html>

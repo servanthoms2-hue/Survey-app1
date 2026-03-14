@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المشرف - نتائج الاستبيان</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #1a1a2e;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+        }
+
+        .admin-badge {
+            background: #e94560;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0f3460;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: opacity 0.3s ease;
+        }
+
+        .export-btn:hover {
+            opacity: 0.9;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: opacity 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            opacity: 0.9;
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            min-width: 250px;
+        }
+
+        .answers-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .answer-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-right: 4px solid #0f3460;
+            transition: transform 0.2s ease;
+        }
+
+        .answer-item:hover {
+            transform: translateX(-5px);
+        }
+
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .participant-name {
+            font-weight: bold;
+            color: #0f3460;
+            font-size: 1.1em;
+        }
+
+        .answer-date {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .question-title {
+            color: #e94560;
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+
+        .answer-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.6;
+            border: 1px solid #eee;
+        }
+
+        .gratitude-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .password-protect {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .login-btn {
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+        }
+
+        .login-btn:hover {
+            background: #16213e;
+        }
+
+        .last-update {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="adminPanel">
+        <header>
+            <h1>📊 لوحة تحكم المشرف - نتائج الاستبيان</h1>
+            <div>
+                <span class="admin-badge">🔐 وصول خاص بالمشرف فقط</span>
+            </div>
+        </header>
+
+        <!-- حماية بكلمة مرور -->
+        <div id="passwordScreen" class="password-protect">
+            <h2>🔒 دخول المشرف</h2>
+            <p>الرجاء إدخال كلمة المرور:</p>
+            <input type="password" id="adminPassword" class="password-input" placeholder="كلمة المرور">
+            <button onclick="checkPassword()" class="login-btn">دخول</button>
+        </div>
+
+        <!-- المحتوى المخفي -->
+        <div id="adminContent" style="display: none;">
+            <!-- الإحصائيات -->
+            <div class="stats-grid" id="statsContainer"></div>
+
+            <!-- أزرار التحكم والبحث -->
+            <div class="controls">
+                <button onclick="exportToCSV()" class="export-btn">📥 تصدير إلى CSV</button>
+                <button onclick="deleteAllData()" class="delete-btn">🗑️ حذف كل البيانات</button>
+                <input type="text" id="searchAnswers" class="search-box" placeholder="🔍 بحث في الإجابات...">
+            </div>
+
+            <!-- عرض الإجابات -->
+            <div class="answers-container">
+                <h2 style="margin-bottom: 20px;">📝 جميع إجابات المشاركين</h2>
+                <div id="answersList"></div>
+            </div>
+            
+            <div class="last-update" id="lastUpdate"></div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'survey_responses_2024';
+        const ADMIN_PASSWORD = 'admin123'; // ⚠️ غير كلمة المرور هنا
+
+        // التحقق من كلمة المرور
+        window.checkPassword = function() {
+            const pwd = document.getElementById('adminPassword').value;
+            if (pwd === ADMIN_PASSWORD) {
+                document.getElementById('passwordScreen').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadData();
+                // تحديث كل 30 ثانية
+                setInterval(loadData, 30000);
+            } else {
+                alert('❌ كلمة المرور غير صحيحة');
+            }
+        };
+
+        // تحميل البيانات
+        function loadData() {
+            const responses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            displayStats(responses);
+            displayAnswers(responses);
+            updateLastUpdate();
+        }
+
+        // عرض الإحصائيات
+        function displayStats(responses) {
+            const statsContainer = document.getElementById('statsContainer');
+            
+            const participants = new Set(responses.map(r => r.participant));
+            const totalParticipants = participants.size;
+            const totalAnswers = responses.filter(r => r.type === 'answer').length;
+            const totalGratitudes = responses.filter(r => r.type === 'gratitude').length;
+            
+            // أكثر مشارك نشاطاً
+            let mostActive = '';
+            if (responses.length > 0) {
+                const participantCounts = {};
+                responses.forEach(r => {
+                    participantCounts[r.participant] = (participantCounts[r.participant] || 0) + 1;
+                });
+                mostActive = Object.keys(participantCounts).reduce((a, b) => 
+                    participantCounts[a] > participantCounts[b] ? a : b
+                );
+            }
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalParticipants}</div>
+                    <div class="stat-label">عدد المشاركين</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalAnswers}</div>
+                    <div class="stat-label">إجابات الأسئلة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalGratitudes}</div>
+                    <div class="stat-label">تعبيرات الامتنان</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${responses.length}</div>
+                    <div class="stat-label">إجمالي الإجابات</div>
+                </div>
+            `;
+        }
+
+        // عرض الإجابات
+        function displayAnswers(responses, filterText = '') {
+            const container = document.getElementById('answersList');
+            
+            if (responses.length === 0) {
+                container.innerHTML = '<div class="no-data">📭 لا توجد إجابات بعد</div>';
+                return;
+            }
+
+            // ترتيب من الأحدث للأقدم
+            let filtered = [...responses].sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            // تطبيق الفلتر
+            if (filterText) {
+                const searchLower = filterText.toLowerCase();
+                filtered = filtered.filter(r => 
+                    r.participant.toLowerCase().includes(searchLower) ||
+                    (r.type === 'answer' && r.answer.toLowerCase().includes(searchLower)) ||
+                    (r.type === 'gratitude' && r.text.toLowerCase().includes(searchLower))
+                );
+            }
+
+            let html = '';
+            filtered.forEach(response => {
+                const date = new Date(response.timestamp).toLocaleString('ar-SA', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                if (response.type === 'answer') {
+                    html += `
+                        <div class="answer-item">
+                            <div class="answer-header">
+                                <span class="participant-name">👤 ${response.participant}</span>
+                                <span class="answer-date">📅 ${date}</span>
+                            </div>
+                            <div class="question-title">❓ ${response.scenarioTitle}</div>
+                            <div class="answer-text">${response.answer.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="answer-item">
+                            <div class="answer-header">
+                                <span class="participant-name">👤 ${response.participant} <span class="gratitude-badge">💝 تعبير امتنان</span></span>
+                                <span class="answer-date">📅 ${date}</span>
+                            </div>
+                            <div class="answer-text">${response.text.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html;
+        }
+
+        // تحديث آخر تحديث
+        function updateLastUpdate() {
+            const now = new Date().toLocaleString('ar-SA');
+            document.getElementById('lastUpdate').innerHTML = `آخر تحديث: ${now}`;
+        }
+
+        // فلتر البحث
+        window.filterAnswers = function() {
+            const searchText = document.getElementById('searchAnswers').value;
+            const responses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            displayAnswers(responses, searchText);
+        };
+
+        // تصدير إلى CSV
+        window.exportToCSV = function() {
+            const responses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            
+            if (responses.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            let csv = 'النوع,المشارك,السؤال/النوع,الإجابة,التاريخ\n';
+            
+            responses.forEach(r => {
+                if (r.type === 'answer') {
+                    csv += `إجابة,${r.participant},${r.scenarioTitle},"${r.answer.replace(/"/g, '""')}",${r.timestamp}\n`;
+                } else {
+                    csv += `امتنان,${r.participant},تعبير عن الامتنان,"${r.text.replace(/"/g, '""')}",${r.timestamp}\n`;
+                }
+            });
+
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' }); // إضافة BOM للعربية
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `نتائج_الاستبيان_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        };
+
+        // حذف كل البيانات
+        window.deleteAllData = function() {
+            if (confirm('⚠️ هل أنت متأكد من حذف كل البيانات؟ هذا الإجراء لا يمكن التراجع عنه')) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadData();
+            }
+        };
+
+        // ربط البحث
+        document.getElementById('searchAnswers').addEventListener('keyup', filterAnswers);
+    </script>
+</body>
+</html>
